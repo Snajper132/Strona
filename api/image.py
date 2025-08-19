@@ -1,43 +1,23 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
+# Plik: api/image.py
+
 import datetime
 
-# URL obrazka do wyświetlenia
-IMAGE_URL = "https://strona-blue.vercel.app/api/image"
+IMAGE_URL = "https://cdn.discordapp.com/attachments/1383724793731350578/1407330268355760208/Screenshot_2025-08-19-13-47-46-56_a23b203fd3aafc6dcb84e438dda678b6.jpg?ex=68a5b5f2&is=68a46472&hm=235653aa2238a45a91a06154c8541cdcee57846fea2e37cccbaef627414779ea&"
 
-class ImageServer(BaseHTTPRequestHandler):
-    def handleRequest(self):
-        try:
-            # Pobieramy aktualną godzinę
-            current_time = datetime.datetime.now().strftime("%H:%M:%S")
-            
-            # Tworzymy prostą stronę HTML z obrazem
-            html = f"""
-            <html>
-                <head><title>Testowy Serwer</title></head>
-                <body>
-                    <h1>Testowy komunikat</h1>
-                    <p>Aktualna godzina: {current_time}</p>
-                    <img src="{IMAGE_URL}" alt="Obraz testowy" style="max-width:100%;height:auto;">
-                </body>
-            </html>
-            """
-            
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
-            self.wfile.write(html.encode())
-        
-        except Exception as e:
-            self.send_response(500)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
-            self.wfile.write(f"500 - Internal Server Error<br>{str(e)}".encode())
+def handler(request, response):
+    current_time = datetime.datetime.now().strftime("%H:%M:%S")
+    
+    html = f"""
+    <html>
+        <head><title>Testowy Serwer</title></head>
+        <body>
+            <h1>Testowy komunikat</h1>
+            <p>Aktualna godzina: {current_time}</p>
+            <img src="{IMAGE_URL}" alt="Obraz testowy" style="max-width:100%;height:auto;">
+        </body>
+    </html>
+    """
+    
+    response.headers["Content-Type"] = "text/html"
+    response.send(html)
 
-    do_GET = handleRequest
-    do_POST = handleRequest
-
-if __name__ == "__main__":
-    server_address = ('', 8000)
-    httpd = HTTPServer(server_address, ImageServer)
-    print("Serwer działa na http://localhost:8000")
-    httpd.serve_forever()
